@@ -1,0 +1,16 @@
+services:
+  mysql:
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tareas_db_test   # ← BD de pruebas
+      MYSQL_USER: tarea_user
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+
+  backend:
+    env_file:
+      - ./backend_node_docker/.env.test
+    ports:
+      - "3000:3000"
+    # sin volumes para que no tapes la imagen en test

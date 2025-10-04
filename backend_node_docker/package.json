@@ -2,16 +2,14 @@
   "name": "backend_node_docker",
   "version": "1.0.0",
   "main": "src/index.js",
-  "license": "ISC",
+  "type": "commonjs",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.3",
     "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "prisma": "^6.16.3"
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

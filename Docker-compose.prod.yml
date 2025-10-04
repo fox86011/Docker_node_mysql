@@ -1,0 +1,27 @@
+services:
+  mysql:
+    # En prod mantenemos mismo usuario/clave/base (coherentes con .env.prod)
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tareas_db
+      MYSQL_USER: tarea_user
+      MYSQL_PASSWORD: root
+    # Si en tu host ya hay MySQL en 3306, cambia a "3307:3306"
+    ports:
+      - "3306:3306"
+
+  adminer:
+    # En prod puedes omitir Adminer si no lo necesitas
+    ports:
+      - "8080:8080"
+
+  backend:
+    # Usa el .env.prod del backend
+    env_file:
+      - ./backend_node_docker/.env.prod
+    # En prod NO montamos el código ni node_modules
+    ports:
+      - "3000:3000"
+    # Asegúrate que tu Dockerfile haga `CMD ["npm","start"]`
+    # y que "start" apunte a "node src/index.js"
+  
