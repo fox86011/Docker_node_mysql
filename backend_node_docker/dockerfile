@@ -1,0 +1,32 @@
+# Etapa 1: instala dependencias
+FROM node:18-alpine AS deps
+WORKDIR /usr/src/app
+
+# Copia solo manifiestos para aprovechar la cache
+COPY package*.json ./
+
+# Instala dependencias (incluye dev si las hay)
+RUN npm ci
+
+# (Opcional) Si usas Prisma, generar cliente:
+# RUN npx prisma generate
+
+# Etapa 2: imagen final mínima
+FROM node:18-alpine AS runner
+WORKDIR /usr/src/app
+
+# Copiamos node_modules ya resueltas desde deps
+COPY --from=deps /usr/src/app/node_modules ./node_modules
+
+# Copiamos el resto del código
+COPY . .
+
+# Variables por defecto
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Expone el puerto de la app
+EXPOSE 3000
+
+# Inicia la app (usa tu script start)
+CMD ["npm", "start"]

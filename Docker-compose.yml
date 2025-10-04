@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tareas_db
+      MYSQL_USER: tarea_user
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+  backend:
+    build:
+      context: ./backend_node_docker   # ← confirma que esta carpeta EXISTE y contiene package.json
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: tarea_user
+      DB_PASSWORD: root
+      DB_NAME: tareas_db
+      # DATABASE_URL: "mysql://tarea_user:root@mysql:3306/tareas_db"
+    depends_on:
+      - mysql
+    # Si tu Dockerfile arranca con "npm start" y quieres nodemon en dev, puedes sobreescribir:
+    # command: ["npm", "run", "dev"]
+
+volumes:
+  mysql_data:
